@@ -21,11 +21,9 @@ import butterknife.ButterKnife;
 
 public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder> {
     private ArrayList<Ingredient> mIngredientList;
-    private Context mContext;
 
 
-    public IngredientAdapter(Context context) {
-        mContext = context;
+    public IngredientAdapter() {
     }
 
     @Override
@@ -56,7 +54,6 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
         TextView mQuantity;
         @BindView(R.id.name)
         TextView mName;
-
 
         public IngredientViewHolder(View itemView) {
             super(itemView);

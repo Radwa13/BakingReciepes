@@ -16,12 +16,14 @@
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:visibility="gone"
             android:src="@drawable/previous"
-            android:contentDescription="@string/prev"
+
             app:layout_constraintBottom_toBottomOf="@+id/main_media_frame"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/main_media_frame"
-            android:layout_marginLeft="8dp" />
+            android:layout_marginLeft="8dp"
+            android:contentDescription="@string/prev" />
 
         <ImageView
             android:id="@+id/exo_next"
@@ -31,6 +33,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:src="@drawable/next"
+            android:visibility="gone"
             android:contentDescription="@string/next"
             app:layout_constraintBottom_toBottomOf="@+id/main_media_frame"
             app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +48,7 @@
             android:layout_marginStart="8dp"
             android:textColor="@color/textColor"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="20dp"
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toTopOf="@+id/desc"
             app:layout_constraintStart_toEndOf="@+id/exo_prev"
@@ -58,10 +61,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:textSize="20dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:textSize="20sp"
-
             android:textColor="@color/textColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +73,7 @@
 
         <FrameLayout
             android:id="@+id/main_media_frame"
-            android:layout_width="500dp"
+            android:layout_width="400dp"
             android:layout_height="500dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"

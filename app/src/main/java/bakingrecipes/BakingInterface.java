@@ -1,7 +1,5 @@
 package bakingrecipes;
 
-import com.example.alfa.bakingreciepes.*;
-
 import java.util.ArrayList;
 
 import bakingrecipes.Data.Example;

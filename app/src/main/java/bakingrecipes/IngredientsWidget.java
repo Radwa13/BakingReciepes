@@ -8,14 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
-import com.example.alfa.bakingreciepes.*;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-
-import java.util.ArrayList;
-
-import bakingrecipes.Data.Ingredient;
+import com.example.alfa.bakingreciepes.R;
 
 /**
  * Implementation of App Widget functionality.
@@ -26,7 +19,11 @@ static String mBakingName;
                                 int appWidgetId) {
         RemoteViews views = setRemoteViewListView(context);
         views.setTextViewText(R.id.ingredientsName, mBakingName);
+        Intent configIntent = new Intent(context, RecipeActivity.class);
+        configIntent.putExtra("fromWidget","");
+        PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
 
+        views.setOnClickPendingIntent(R.id.see_more, configPendingIntent);
         appWidgetManager.updateAppWidget(appWidgetId, views
         );
 
@@ -35,8 +32,7 @@ static String mBakingName;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-
+        updateIngredientsWidgets(context,appWidgetManager,appWidgetIds,mBakingName);
     }
 
     @Override
@@ -74,6 +70,12 @@ static String mBakingName;
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentLaunched, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setPendingIntentTemplate(R.id.appwidget_listView, pendingIntent);
 //remoteViews.setEmptyView(R.id.appwidget_listView,R.id.em);
+
+        Intent appIntent = new Intent(context, RecipeActivity.class);
+//
+        intent.putExtra("fromWidget",true);
+        PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setPendingIntentTemplate(R.id.see_more, appPendingIntent);
         return remoteViews;
     }
 

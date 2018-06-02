@@ -27,5 +27,5 @@
     android:textColor="@color/textColor"
     android:text="@string/see_more"
     android:background="@drawable/rounded_button"
-    android:layout_weight="1.5"/>
+    android:layout_weight="1"/>
 </LinearLayout>

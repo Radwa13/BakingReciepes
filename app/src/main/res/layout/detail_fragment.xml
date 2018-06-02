@@ -20,6 +20,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/main_media_frame"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/main_media_frame"
+        android:contentDescription="@string/prev"
         android:layout_marginLeft="8dp" />
 
     <ImageView
@@ -30,6 +31,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:src="@drawable/next"
+        android:contentDescription="@string/next"
         app:layout_constraintBottom_toBottomOf="@+id/main_media_frame"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/main_media_frame"

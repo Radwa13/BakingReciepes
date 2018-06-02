@@ -2,18 +2,18 @@ package bakingrecipes;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.alfa.bakingreciepes.*;
 import com.google.gson.Gson;
 
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 
@@ -27,13 +27,15 @@ import butterknife.OnClick;
 //import static com.example.alfa.bakingrecipes.BakingProvider.ACTION_INGREDIENT_ADDED;
 
 
-public class RecipeActivity extends AppCompatActivity implements StepsAdapter.ListItemClickListner, StepsFragment.StepItemClickListner {
+public class RecipeActivity extends AppCompatActivity implements StepsAdapter.ListItemClickListner, StepsFragment.StepItemClickListener {
     private boolean isTablet;
     private Example mBaking;
     private ArrayList<Ingredient> mIngredientList;
     private ArrayList<Step> mStepList;
     @BindView(R.id.pin)
     Button pin;
+    @BindView(R.id.bakingNameTv)
+    TextView mBakingName;
     public static final String BAKING_KEY = "com.example.alfa.bakingrecipes.baking.key";
     public static final String INGREDIENTS_KEY = "com.example.alfa.bakingrecipes.ingredients.key";
     public static final String STEPS_KEY = "com.example.alfa.bakingrecipes.steps.key";
@@ -43,13 +45,20 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
+        ButterKnife.bind(this);
 
-        if (getIntent() != null) {
+        if (getIntent() != null && getIntent().hasExtra("fromWidget")) {
+            Gson gson = new Gson();
+            String json = SharedPreferencesMethods.loadSavedPreferencesString(this, BAKING_KEY);
+            mBaking = gson.fromJson(json, Example.class);
+            mIngredientList = mBaking.getIngredients();
+            mStepList = mBaking.getSteps();
+        } else if (getIntent() != null && !getIntent().hasExtra("fromWidget")) {
+
             mBaking = getIntent().getParcelableExtra(BAKING_KEY);
             mIngredientList = getIntent().getParcelableArrayListExtra(INGREDIENTS_KEY);
             mStepList = getIntent().getParcelableArrayListExtra(STEPS_KEY);
         }
-
         Fragment fragmentIngredients = getSupportFragmentManager().findFragmentById(R.id.master_list_ingredients);
         Bundle bundle2 = new Bundle();
         bundle2.putParcelableArrayList(INGREDIENTS_KEY, mIngredientList);
@@ -62,9 +71,12 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
             isTablet = true;
 
             if (savedInstanceState == null) {
-                DetailFragment detailFragment = new DetailFragment();
-                detailFragment.setSteps(mStepList, 0);
+                bundle = new Bundle();
 
+                DetailFragment detailFragment = new DetailFragment();
+                bundle.putBoolean("isTablet", isTablet);
+                detailFragment.setSteps(mStepList, 0);
+                detailFragment.setArguments(bundle);
                 FragmentManager fragmentManager = getSupportFragmentManager();
 
                 fragmentManager.beginTransaction().add(R.id.master_list_detail, detailFragment)
@@ -74,9 +86,14 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
             }
 
         }
+        bundle = new Bundle();
+
         bundle.putBoolean("isTablet", isTablet);
+        bundle.putParcelableArrayList(STEPS_KEY, mStepList);
+
         fragmentSteps.setArguments(bundle);
-        ButterKnife.bind(this);
+        mBakingName.setText(mBaking.getName());
+
 
     }
 
@@ -90,9 +107,9 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
 
         Gson gson = new Gson();
         String json = gson.toJson(mBaking);
-        SharedPrefrencesMethods.savePreferencesString(this, BAKING_KEY, json);
+        SharedPreferencesMethods.savePreferencesString(this, BAKING_KEY, json);
         //Now update all widgets
-        IngredientsWidget.updateIngredientsWidgets(this, appWidgetManager, appWidgetIds,mBaking.getName());
+        IngredientsWidget.updateIngredientsWidgets(this, appWidgetManager, appWidgetIds, mBaking.getName());
 
     }
 
@@ -101,10 +118,11 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
 
         if (findViewById(R.id.layoutForTablet) != null) {
             isTablet = true;
-
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isTablet", isTablet);
             DetailFragment detailFragment = new DetailFragment();
             detailFragment.setSteps(mStepList, position);
-
+            detailFragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
 
             fragmentManager.beginTransaction().add(R.id.master_list_detail, detailFragment)
@@ -113,6 +131,10 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
 //
 
 
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra("isTablet", isTablet);
+            startActivity(intent);
         }
     }
 

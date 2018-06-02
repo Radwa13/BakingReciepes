@@ -2,17 +2,14 @@ package bakingrecipes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.example.alfa.bakingreciepes.*;
+import com.example.alfa.bakingreciepes.R;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-
 import bakingrecipes.Data.Example;
-import bakingrecipes.Data.Ingredient;
-import bakingrecipes.Data.Step;
 
 import static bakingrecipes.RecipeActivity.BAKING_KEY;
 
@@ -26,7 +23,7 @@ public class BakingWidgetService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         Gson gson = new Gson();
-        String json = SharedPrefrencesMethods.loadSavedPreferencesString(this.getApplicationContext(),BAKING_KEY);
+        String json = SharedPreferencesMethods.loadSavedPreferencesString(this.getApplicationContext(),BAKING_KEY);
        mBaking = gson.fromJson(json, Example.class);
 
         return new BakingRemoteFactory(this.getApplicationContext());
@@ -65,7 +62,12 @@ public class BakingWidgetService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int position) {
+
+
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.ingredient_item);
+            remoteViews.setTextColor(R.id.quantity, Color.BLACK);
+            remoteViews.setTextColor(R.id.name, Color.BLACK);
+
             String quantityMeasure=mBaking.getIngredients().get(position).getQuantity()+"  "+mBaking.getIngredients().get(position).getMeasure();
             remoteViews.setTextViewText(R.id.quantity, quantityMeasure);
             remoteViews.setTextViewText(R.id.name, mBaking.getIngredients().get(position).getIngredient());

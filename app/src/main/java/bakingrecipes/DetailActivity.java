@@ -14,11 +14,18 @@ import java.util.ArrayList;
 import bakingrecipes.Data.Step;
 
 public class DetailActivity extends AppCompatActivity implements DetailFragment.CloseVideo {
+    boolean isTablet;
+    int orientation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE){
+
+        if (getIntent() != null) {
+            isTablet = getIntent().getBooleanExtra("isTablet", false);
+        }
+        orientation=getResources().getConfiguration().orientation;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && !isTablet) {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -36,9 +43,9 @@ public class DetailActivity extends AppCompatActivity implements DetailFragment.
             ArrayList<Step> stepArrayList = getIntent().getParcelableArrayListExtra("val");
             int position = getIntent().getIntExtra("pos", 0);
             detailFragment.setSteps(stepArrayList, position);
-
-            // Get the correct index to access in the array of head images from the intent
-            // Set the default value to 0
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isTablet", isTablet);
+            detailFragment.setArguments(bundle);
 
 
             // Add the fragment to its container using a FragmentManager and a Transaction
@@ -53,7 +60,7 @@ public class DetailActivity extends AppCompatActivity implements DetailFragment.
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE){
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
             getActionBar().hide();
         }
@@ -63,7 +70,7 @@ public class DetailActivity extends AppCompatActivity implements DetailFragment.
 
     @Override
     public void onBack() {
-
-        finish();
+        if (!isTablet &&orientation== Configuration.ORIENTATION_LANDSCAPE)
+            finish();
     }
 }

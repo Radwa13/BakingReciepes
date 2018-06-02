@@ -66,14 +66,11 @@ public class DetailFragment extends Fragment {
     private final String STATE_PLAYER_FULLSCREEN = "playerFullscreen";
     private DetailFragment.CloseVideo mClickHandler;
 
-    private MediaSource mVideoSource;
     private boolean mExoPlayerFullscreen = false;
-    private FrameLayout mFullScreenButton;
-    private ImageView mFullScreenIcon;
+
     private Dialog mFullScreenDialog;
 private boolean isTablet;
-    private int mResumeWindow;
-    private long mResumePosition;
+
 
 
     @Nullable
@@ -90,7 +87,7 @@ private boolean isTablet;
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE&&!mStepList.get(mPosition).getVideoURL().equals("")&&!isTablet) {
             landScape = true;
             initFullscreenDialog();
-            openFullscreenDialog();
+         openFullscreenDialog();
     //
       mClickHandler = (CloseVideo) getActivity();
         }
@@ -110,63 +107,35 @@ private boolean isTablet;
         mPosition = position;
     }
 
+    private void openFullscreenDialog() {
+
+        ((ViewGroup) mExoPlayerView.getParent()).removeView(mExoPlayerView);
+        mFullScreenDialog.addContentView(mExoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mExoPlayerFullscreen = true;
+        mFullScreenDialog.show();
+    }
+
 
     private void initFullscreenDialog() {
 
         mFullScreenDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
             public void onBackPressed() {
-                if (mExoPlayerFullscreen && !landScape) {
-                    closeFullscreenDialog();
-                    super.onBackPressed();
 
-                } else if (mExoPlayerFullscreen && landScape) {
+              if (mExoPlayerFullscreen) {
                     exit();
                 }
             }
         };
     }
 
-    private void closeFullscreenDialog() {
-
-        ((ViewGroup) mExoPlayerView.getParent()).removeView(mExoPlayerView);
-
-        ((FrameLayout) getActivity().findViewById(R.id.main_media_frame)).addView(mExoPlayerView);
-        mExoPlayerFullscreen = false;
-        mFullScreenDialog.dismiss();
-        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_fullscreen_expand));
-    }
 
     private void exit() {
         mClickHandler.onBack();
+
     }
 
 
-    private void initFullscreenButton() {
 
-        PlaybackControlView controlView = mExoPlayerView.findViewById(R.id.exo_controller);
-        mFullScreenIcon = controlView.findViewById(R.id.exo_fullscreen_icon);
-        mFullScreenButton = controlView.findViewById(R.id.exo_fullscreen_button);
-        mFullScreenButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!mExoPlayerFullscreen)
-                    openFullscreenDialog();
-                else
-                    closeFullscreenDialog();
-            }
-        });
-    }
-
-
-    private void openFullscreenDialog() {
-
-        ((ViewGroup) mExoPlayerView.getParent()).removeView(mExoPlayerView);
-        mFullScreenDialog.addContentView(mExoPlayerView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        if (!landScape)
-            mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_fullscreen_skrink));
-        mExoPlayerFullscreen = true;
-        mFullScreenDialog.show();
-    }
 
 
     private void initializePlayer(Uri uri) {
@@ -199,7 +168,6 @@ private boolean isTablet;
 
             initializePlayer(Uri.parse(mStepList.get(mPosition).getVideoURL()));
             mExoPlayerView.setPlayer(mPlayer);
-            initFullscreenButton();
             initFullscreenDialog();
 
         } else {
@@ -223,6 +191,7 @@ private boolean isTablet;
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STEP_LIST_KEY, mStepList);
+
     }
 
 

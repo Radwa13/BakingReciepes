@@ -1,6 +1,10 @@
 package bakingrecipes;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +16,7 @@ import com.example.alfa.bakingreciepes.*;
 import java.util.ArrayList;
 
 import bakingrecipes.Data.Example;
+import bakingrecipes.idilingResources.SimpleIdlingResources;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -23,6 +28,8 @@ public class BakingAdapter extends RecyclerView.Adapter<BakingAdapter.BakingView
     private ArrayList<Example> mBakingList;
     final private ListItemClickListner mClickHandler;
     private Context mContext;
+
+
     public interface ListItemClickListner {
         void onClick(int position);
     }

@@ -8,5 +8,10 @@
     <string name="empty_string">No recede added to widget</string>
     <string name="pinToWidget">Pin to widget </string>
     <string name="see_more">See full recipe</string>
+    <string name="imgContentDscr">Baking Image </string>
+    <string name="next">Next </string>
+    <string name="prev">Previous </string>
+
+
 
 </resources>

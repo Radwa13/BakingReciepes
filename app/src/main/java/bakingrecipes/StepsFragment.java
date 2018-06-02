@@ -36,7 +36,7 @@ public class StepsFragment extends Fragment implements StepsAdapter.ListItemClic
     RecyclerView stepRecyclerView;
     private boolean isTablet;
     private ArrayList<Step> mSteps;
-    public interface StepItemClickListner {
+    public interface StepItemClickListener {
         void onClick(int position);
     }
 

@@ -74,7 +74,7 @@ public class IngredientsFragment extends Fragment {
 
     public void setIngredients(ArrayList<Ingredient> ingredients) {
         mIngredient = ingredients;
-        ingredientAdapter = new IngredientAdapter(getActivity());
+        ingredientAdapter = new IngredientAdapter();
         ingredientAdapter.loadData(mIngredient);
         ingredientRecyclerView.setAdapter(ingredientAdapter);
 
