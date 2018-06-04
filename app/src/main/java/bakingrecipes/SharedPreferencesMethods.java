@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 
-public class SharedPreferencesMethods {
+class SharedPreferencesMethods {
 	
 	public static void savePreferences(Context context, String key, int value) {
 		SharedPreferences sharedPreferences = PreferenceManager
@@ -19,8 +20,7 @@ public class SharedPreferencesMethods {
 	public static int loadSavedPreferences(Context context, String key) {
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		int result = sharedPreferences.getInt(key, 0);
-		return result;
+		return sharedPreferences.getInt(key, 0);
 	}
 	
 	
@@ -34,12 +34,12 @@ public class SharedPreferencesMethods {
 	}
 
 	
+	@Nullable
 	public static String loadSavedPreferencesString(Context context, String key) {
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		String result = sharedPreferences.getString(key, "");
-		
-				return result;
+
+		return sharedPreferences.getString(key, "");
 	}
 
 
@@ -55,9 +55,8 @@ public class SharedPreferencesMethods {
 	public static float loadSavedPreferencesFloat(Context context, String key) {
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		float result = sharedPreferences.getFloat(key,0);
 
-		return result;
+		return sharedPreferences.getFloat(key,0);
 	}
 	
 }

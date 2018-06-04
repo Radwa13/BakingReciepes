@@ -3,6 +3,8 @@ package bakingrecipes;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -19,7 +21,8 @@ import static bakingrecipes.RecipeActivity.BAKING_KEY;
 
 
 public class BakingWidgetService extends RemoteViewsService {
-    Example mBaking;
+    private Example mBaking;
+    @NonNull
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         Gson gson = new Gson();
@@ -29,12 +32,11 @@ public class BakingWidgetService extends RemoteViewsService {
         return new BakingRemoteFactory(this.getApplicationContext());
     }
 
-    public class BakingRemoteFactory implements RemoteViewsService.RemoteViewsFactory {
-        Context mContext;
-        String mBakingName;
+    class BakingRemoteFactory implements RemoteViewsService.RemoteViewsFactory {
+        final Context mContext;
 
 
-        public BakingRemoteFactory(Context context) {
+        BakingRemoteFactory(Context context) {
             mContext = context;
 
 
@@ -57,9 +59,12 @@ public class BakingWidgetService extends RemoteViewsService {
 
         @Override
         public int getCount() {
+            if(mBaking!=null)
             return mBaking.getIngredients().size();
+            else return 0;
         }
 
+        @NonNull
         @Override
         public RemoteViews getViewAt(int position) {
 
@@ -74,6 +79,7 @@ public class BakingWidgetService extends RemoteViewsService {
             return remoteViews;
         }
 
+        @Nullable
         @Override
         public RemoteViews getLoadingView() {
             return null;

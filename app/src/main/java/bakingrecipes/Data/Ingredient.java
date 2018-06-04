@@ -2,6 +2,7 @@ package bakingrecipes.Data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -26,15 +27,15 @@ public class Ingredient implements Parcelable {
     @SerializedName("quantity")
 
     @Expose
-    private float quantity;
+    private final float quantity;
     @SerializedName("measure")
     @Expose
-    private String measure;
+    private final String measure;
     @SerializedName("ingredient")
     @Expose
-    private String ingredient;
+    private final String ingredient;
 
-    protected Ingredient(Parcel in) {
+    private Ingredient(Parcel in) {
         quantity = in.readFloat();
         measure = in.readString();
         ingredient = in.readString();
@@ -42,7 +43,7 @@ public class Ingredient implements Parcelable {
 
     public static final Creator<Ingredient> CREATOR = new Creator<Ingredient>() {
         @Override
-        public Ingredient createFromParcel(Parcel in) {
+        public Ingredient createFromParcel(@NonNull Parcel in) {
             return new Ingredient(in);
         }
 
@@ -58,7 +59,7 @@ public class Ingredient implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
         parcel.writeFloat(quantity);
         parcel.writeString(measure);
         parcel.writeString(ingredient);

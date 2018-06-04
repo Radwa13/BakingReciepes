@@ -11,7 +11,9 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="bakingrecipes.MainActivity">
+        <activity android:name="bakingrecipes.MainActivity"
+            android:launchMode="singleTop"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,12 +21,17 @@
             </intent-filter>
         </activity>
         <activity android:name="bakingrecipes.RecipeActivity"
-            android:parentActivityName="bakingrecipes.MainActivity">
+            android:parentActivityName="bakingrecipes.MainActivity"
+            android:launchMode="singleTop"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="bakingrecipes.MainActivity"> </meta-data>
         </activity>
         <activity android:name="bakingrecipes.DetailActivity"
+            android:supportsPictureInPicture="true"
+            android:resizeableActivity="true"
+            android:launchMode="singleTask"
             android:parentActivityName="bakingrecipes.RecipeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -19,5 +19,6 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_weight="1"
+        android:id="@+id/play"
         android:src="@drawable/play" />
 </LinearLayout>

@@ -2,6 +2,8 @@ package bakingrecipes.Data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -12,16 +14,18 @@ import java.util.ArrayList;
  * Created by Alfa on 5/9/2018.
  */
 public class Example implements Parcelable {
+    @Nullable
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private final Integer id;
     @SerializedName("name")
     @Expose
-    private String name;
+    private final String name;
     @SerializedName("ingredients")
     @Expose
-    private ArrayList<Ingredient> ingredients = null;
+    private final ArrayList<Ingredient> ingredients;
 
+    @Nullable
     public Integer getId() {
         return id;
     }
@@ -38,6 +42,7 @@ public class Example implements Parcelable {
         return steps;
     }
 
+    @Nullable
     public Integer getServings() {
         return servings;
     }
@@ -49,13 +54,14 @@ public class Example implements Parcelable {
     @SerializedName("steps")
     @Expose
 
-    private ArrayList<Step> steps = null;
+    private final ArrayList<Step> steps;
+    @Nullable
     @SerializedName("servings")
     @Expose
-    private Integer servings;
+    private final Integer servings;
     @SerializedName("image")
     @Expose
-    private String image;
+    private final String image;
 
     protected Example(Parcel in) {
         if (in.readByte() == 0) {
@@ -76,7 +82,7 @@ public class Example implements Parcelable {
 
     public static final Creator<Example> CREATOR = new Creator<Example>() {
         @Override
-        public Example createFromParcel(Parcel in) {
+        public Example createFromParcel(@NonNull Parcel in) {
             return new Example(in);
         }
 
@@ -92,7 +98,7 @@ public class Example implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         if (id == null) {
             dest.writeByte((byte) 0);
         } else {

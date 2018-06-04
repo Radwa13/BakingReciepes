@@ -1,11 +1,15 @@
 package bakingrecipes;
 
+import android.app.PictureInPictureParams;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Rational;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.example.alfa.bakingreciepes.*;
 
@@ -14,11 +18,13 @@ import java.util.ArrayList;
 import bakingrecipes.Data.Step;
 
 public class DetailActivity extends AppCompatActivity implements DetailFragment.CloseVideo {
-    boolean isTablet;
-    int orientation;
+    private boolean isTablet;
+    private int orientation;
 
+    public interface UserPressHome{
+    }
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (getIntent() != null) {
@@ -57,10 +63,9 @@ public class DetailActivity extends AppCompatActivity implements DetailFragment.
 
         }
     }
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE&&!isTablet) {
             getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
             getActionBar().hide();
         }
@@ -72,5 +77,44 @@ public class DetailActivity extends AppCompatActivity implements DetailFragment.
     public void onBack() {
         if (!isTablet &&orientation== Configuration.ORIENTATION_LANDSCAPE)
             finish();
+    }
+    @Override
+    protected void onUserLeaveHint()
+    {
+        super.onUserLeaveHint();
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
+            //Trigger PiP mode
+            try {
+                Rational rational = new Rational(16,
+                       9);
+
+                PictureInPictureParams mParams =
+                        new PictureInPictureParams.Builder()
+                                .setAspectRatio(rational)
+                                .build();
+
+                enterPictureInPictureMode(mParams);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(this, "API 26 needed to perform PiP", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void onPictureInPictureModeChanged (boolean isInPictureInPictureMode, Configuration newConfig) {
+        if (isInPictureInPictureMode) {
+            // Hide the full-screen UI (controls, etc.) while in picture-in-picture mode.
+        } else {
+            // Restore the full-screen UI.
+        }
+    }
+
+    //method to change actionBar title
+    public void setActionBarTitle(String title) {
+        if(getSupportActionBar()!=null)
+        getSupportActionBar().setTitle(title);
     }
 }

@@ -13,7 +13,7 @@ import static bakingrecipes.NetworkUtils.BASE_URL;
  * Created by Alfa on 4/18/2018.
  */
 
-public class RetrofitClient {
+class RetrofitClient {
     public static   Retrofit getClient() {
         Retrofit retrofit;
         retrofit = new Retrofit.Builder()

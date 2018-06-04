@@ -8,7 +8,6 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:id="@+id/nss"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -26,12 +25,6 @@
                 android:textColor="@color/textColor"
                 android:text="@string/pinToWidget"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:id="@+id/bakingNameTv"
-                android:textSize="20sp"
-                android:textColor="@color/textColor"
-                android:layout_height="wrap_content" />
             <fragment
                 android:id="@+id/master_list_ingredients"
                 android:name="bakingrecipes.IngredientsFragment"

@@ -8,7 +8,9 @@ import android.support.annotation.VisibleForTesting;
 import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.example.alfa.bakingreciepes.R;
 
@@ -18,6 +20,7 @@ import bakingrecipes.Data.Example;
 import bakingrecipes.idilingResources.SimpleIdlingResources;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -29,14 +32,23 @@ import static bakingrecipes.RecipeActivity.STEPS_KEY;
 
 
 public class MainActivity extends AppCompatActivity implements BakingAdapter.ListItemClickListner {
+    @Nullable
     @BindView(R.id.bakingRv)
+    protected
     RecyclerView mRecyclerView;
-    BakingInterface mInterface;
-    BakingAdapter bakingAdapter;
-    ArrayList<Example> mBakingList;
+    @Nullable
+    @BindView(R.id.reload)
+    protected
+    ImageView reload;
+    @Nullable
+    @BindView(R.id.retry)
+    protected
+    LinearLayout retry;
+    private BakingInterface mInterface;
+    private BakingAdapter bakingAdapter;
+    @Nullable
+    private ArrayList<Example> mBakingList;
     private final String STATE_KEY = " com.example.alfa.bakingrecipes.state_kwy";
-    public static String LAST_ITEM;
-    public static int LAST_INDEX;
 
 
     @Nullable
@@ -51,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements BakingAdapter.Lis
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mIdlingResource = new SimpleIdlingResources();
@@ -78,6 +90,12 @@ public class MainActivity extends AppCompatActivity implements BakingAdapter.Lis
 
     }
 
+    @OnClick(R.id.reload)
+    public void tryAgain() {
+        retry.setVisibility(View.GONE);
+
+        loadBakingData();
+    }
 
     private void loadBakingData() {
         mInterface = RetrofitClient.getClient().create(BakingInterface.class);
@@ -90,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements BakingAdapter.Lis
 
             public void onError(Throwable e) {
                 System.out.println("failure");
+                retry.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
             }
 
             @Override
@@ -104,10 +124,10 @@ public class MainActivity extends AppCompatActivity implements BakingAdapter.Lis
             }
 
             public void onNext(ArrayList<Example> list) {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                reload.setVisibility(View.GONE);
                 mBakingList = list;
                 bakingAdapter.loadData(list);
-                LAST_INDEX=mBakingList.size()-1;
-                LAST_ITEM=mBakingList.get(LAST_INDEX).getName();
                 mRecyclerView.setAdapter(bakingAdapter);
 
                 mIdlingResource.setIdleState(true);
@@ -120,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements BakingAdapter.Lis
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STATE_KEY, mBakingList);
     }

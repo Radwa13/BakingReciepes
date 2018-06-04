@@ -4,12 +4,12 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.example.alfa.bakingreciepes.*;
 import com.google.gson.Gson;
@@ -32,17 +32,16 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
     private Example mBaking;
     private ArrayList<Ingredient> mIngredientList;
     private ArrayList<Step> mStepList;
+    @Nullable
     @BindView(R.id.pin)
     Button pin;
-    @BindView(R.id.bakingNameTv)
-    TextView mBakingName;
     public static final String BAKING_KEY = "com.example.alfa.bakingrecipes.baking.key";
     public static final String INGREDIENTS_KEY = "com.example.alfa.bakingrecipes.ingredients.key";
     public static final String STEPS_KEY = "com.example.alfa.bakingrecipes.steps.key";
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
         ButterKnife.bind(this);
@@ -70,7 +69,7 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
         if (findViewById(R.id.layoutForTablet) != null) {
             isTablet = true;
 
-            if (savedInstanceState == null) {
+            if (savedInstanceState == null||getSupportFragmentManager().getFragments().size()==0) {
                 bundle = new Bundle();
 
                 DetailFragment detailFragment = new DetailFragment();
@@ -92,8 +91,7 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
         bundle.putParcelableArrayList(STEPS_KEY, mStepList);
 
         fragmentSteps.setArguments(bundle);
-        mBakingName.setText(mBaking.getName());
-
+        getSupportActionBar().setTitle(mBaking.getName());
 
     }
 
@@ -138,5 +136,9 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }
 

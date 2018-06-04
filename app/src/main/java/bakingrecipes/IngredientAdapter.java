@@ -1,6 +1,7 @@
 package bakingrecipes;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     public IngredientAdapter() {
     }
 
+    @NonNull
     @Override
     public IngredientAdapter.IngredientViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         int listLayoutId = R.layout.ingredient_item;
@@ -50,12 +52,14 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
     }
 
     public class IngredientViewHolder extends RecyclerView.ViewHolder  {
+        @Nullable
         @BindView(R.id.quantity)
         TextView mQuantity;
+        @Nullable
         @BindView(R.id.name)
         TextView mName;
 
-        public IngredientViewHolder(View itemView) {
+        IngredientViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 

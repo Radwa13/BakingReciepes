@@ -28,12 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:id="@+id/bakingNameTv"
-                android:textSize="30sp"
-                android:textColor="@color/textColor"
-                android:layout_height="wrap_content" />
             <fragment
                 android:id="@+id/master_list_ingredients"
                 android:name="bakingrecipes.IngredientsFragment"

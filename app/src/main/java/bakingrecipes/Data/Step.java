@@ -1,22 +1,22 @@
 package bakingrecipes.Data;
 
-/**
- * Created by Alfa on 5/9/2018.
- */
-
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Step implements Parcelable {
 
+    @Nullable
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private final Integer id;
 
+    @Nullable
     public Integer getId() {
         return id;
     }
@@ -40,18 +40,18 @@ public class Step implements Parcelable {
     @SerializedName("shortDescription")
     @Expose
 
-    private String shortDescription;
+    private final String shortDescription;
     @SerializedName("description")
     @Expose
-    private String description;
+    private final String description;
     @SerializedName("videoURL")
     @Expose
-    private String videoURL;
+    private final String videoURL;
     @SerializedName("thumbnailURL")
     @Expose
-    private String thumbnailURL;
+    private final String thumbnailURL;
 
-    protected Step(Parcel in) {
+    private Step(Parcel in) {
         if (in.readByte() == 0) {
             id = null;
         } else {
@@ -65,7 +65,7 @@ public class Step implements Parcelable {
 
     public static final Creator<Step> CREATOR = new Creator<Step>() {
         @Override
-        public Step createFromParcel(Parcel in) {
+        public Step createFromParcel(@NonNull Parcel in) {
             return new Step(in);
         }
 
@@ -81,7 +81,7 @@ public class Step implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         if (id == null) {
             dest.writeByte((byte) 0);
         } else {

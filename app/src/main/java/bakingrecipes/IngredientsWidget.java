@@ -6,32 +6,37 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
 import com.example.alfa.bakingreciepes.R;
+
+import static bakingrecipes.RecipeActivity.BAKING_KEY;
 
 /**
  * Implementation of App Widget functionality.
  */
 public class IngredientsWidget extends AppWidgetProvider {
-static String mBakingName;
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+private static String mBakingName;
+    private static void updateAppWidget(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager,
+                                        int appWidgetId) {
         RemoteViews views = setRemoteViewListView(context);
         views.setTextViewText(R.id.ingredientsName, mBakingName);
-        Intent configIntent = new Intent(context, RecipeActivity.class);
-        configIntent.putExtra("fromWidget","");
-        PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
+        if(!SharedPreferencesMethods.loadSavedPreferencesString(context,BAKING_KEY).equals("")) {
 
-        views.setOnClickPendingIntent(R.id.see_more, configPendingIntent);
-        appWidgetManager.updateAppWidget(appWidgetId, views
-        );
+            Intent configIntent = new Intent(context, RecipeActivity.class);
+            configIntent.putExtra("fromWidget", "");
+            PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
 
+            views.setOnClickPendingIntent(R.id.see_more, configPendingIntent);
+            appWidgetManager.updateAppWidget(appWidgetId, views
+            );
+        }
     }
 
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    public void onUpdate(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager, @NonNull int[] appWidgetIds) {
         updateIngredientsWidgets(context,appWidgetManager,appWidgetIds,mBakingName);
     }
 
@@ -46,7 +51,7 @@ static String mBakingName;
     }
 
 
-    public static void updateIngredientsWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds,String bakingName ) {
+    public static void updateIngredientsWidgets(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager, int[] appWidgetIds, String bakingName ) {
         mBakingName=bakingName;
 
         for (int appWidgetId : appWidgetIds) {
@@ -55,6 +60,7 @@ static String mBakingName;
     }
 
 
+    @NonNull
     private static RemoteViews setRemoteViewListView(Context context) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
 

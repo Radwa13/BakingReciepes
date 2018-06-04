@@ -29,25 +29,23 @@ import static bakingrecipes.RecipeActivity.INGREDIENTS_KEY;
 
 public class IngredientsFragment extends Fragment {
     BakingInterface mInterface;
-    IngredientAdapter ingredientAdapter;
+    private IngredientAdapter ingredientAdapter;
     ArrayList<Example> mBakingList;
 
+    @Nullable
     @BindView(R.id.ingredientsRv)
     RecyclerView ingredientRecyclerView;
-    private boolean isTablet;
+    @Nullable
     private ArrayList<Ingredient> mIngredient;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
 
-        // Inflate the Android-Me fragment layout
         View rootView = inflater.inflate(R.layout.ingredient_fragment, container, false);
 
-        // Get a reference to the ImageView in the fragment layout
         ButterKnife.bind(this, rootView);
-        // If a list of image ids exists, set the image resource to the correct item in that list
-        // Otherwise, create a Log statement that indicates that the list was not found
+
         return rootView;
     }
 
@@ -72,7 +70,7 @@ public class IngredientsFragment extends Fragment {
     }
 
 
-    public void setIngredients(ArrayList<Ingredient> ingredients) {
+    private void setIngredients(ArrayList<Ingredient> ingredients) {
         mIngredient = ingredients;
         ingredientAdapter = new IngredientAdapter();
         ingredientAdapter.loadData(mIngredient);

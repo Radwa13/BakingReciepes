@@ -1,25 +1,26 @@
 package bakingrecipes;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 
-public class AutoGridLayout extends GridLayoutManager {
+class AutoGridLayout extends GridLayoutManager {
     private int mColumnWidth;
     private boolean mColumnWidthChanged = true;
-    public AutoGridLayout(Context context) {
+    public AutoGridLayout(@NonNull Context context) {
         super(context,  1);
         setColumnWidth(checkColumnWidth(context, 600));
 
     }
     /* Initially set spanCount to 1, will be changed automatically later. */
-    public AutoGridLayout(Context context, int columnWidth, int orientation, boolean reverseLayout) {
+    public AutoGridLayout(@NonNull Context context, int columnWidth, int orientation, boolean reverseLayout) {
         super(context, 1, orientation, reverseLayout);
         setColumnWidth(checkColumnWidth(context, columnWidth));
 
     }
-    private int checkColumnWidth(Context context, int columnWidth){
+    private int checkColumnWidth(@NonNull Context context, int columnWidth){
         if (columnWidth <= 0) { /* Set default columnWidth value (48dp here). It is better to move this constant to static constant on top, but we need context to convert it to dp, so can't really do so. */
             columnWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, context.getResources().getDisplayMetrics());
         }

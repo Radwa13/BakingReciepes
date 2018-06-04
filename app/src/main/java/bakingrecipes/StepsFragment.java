@@ -16,7 +16,6 @@ import com.example.alfa.bakingreciepes.R;
 
 import java.util.ArrayList;
 
-import bakingrecipes.Data.Example;
 import bakingrecipes.Data.Step;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,12 +28,13 @@ import static bakingrecipes.RecipeActivity.STEPS_KEY;
  */
 
 public class StepsFragment extends Fragment implements StepsAdapter.ListItemClickListner {
-    BakingInterface mInterface;
-    StepsAdapter stepsAdapter;
-    ArrayList<Example> mBakingList;
+    @Nullable
+    private StepsAdapter stepsAdapter;
+    @Nullable
     @BindView(R.id.stepRv)
     RecyclerView stepRecyclerView;
     private boolean isTablet;
+    @Nullable
     private ArrayList<Step> mSteps;
     public interface StepItemClickListener {
         void onClick(int position);
@@ -76,13 +76,7 @@ public class StepsFragment extends Fragment implements StepsAdapter.ListItemClic
     }
 
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // outState.putParcelableArrayList(STATE_KEY, mBakingList);
-    }
-
-    public void setSteps(ArrayList<Step> steps) {
+    private void setSteps(ArrayList<Step> steps) {
         mSteps = steps;
         stepsAdapter = new StepsAdapter(getActivity(), this);
         stepsAdapter.loadData(mSteps);

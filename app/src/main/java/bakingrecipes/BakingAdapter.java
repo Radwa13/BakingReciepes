@@ -3,8 +3,6 @@ package bakingrecipes;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
-import android.support.test.espresso.IdlingResource;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +14,6 @@ import com.example.alfa.bakingreciepes.*;
 import java.util.ArrayList;
 
 import bakingrecipes.Data.Example;
-import bakingrecipes.idilingResources.SimpleIdlingResources;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -27,7 +24,7 @@ import butterknife.ButterKnife;
 public class BakingAdapter extends RecyclerView.Adapter<BakingAdapter.BakingViewHolder> {
     private ArrayList<Example> mBakingList;
     final private ListItemClickListner mClickHandler;
-    private Context mContext;
+    private final Context mContext;
 
 
     public interface ListItemClickListner {
@@ -40,6 +37,7 @@ public class BakingAdapter extends RecyclerView.Adapter<BakingAdapter.BakingView
     }
 
 
+    @NonNull
     @Override
     public BakingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         int listLayoutId = R.layout.card_view_item;
@@ -57,14 +55,17 @@ public class BakingAdapter extends RecyclerView.Adapter<BakingAdapter.BakingView
 
     @Override
     public int getItemCount() {
+        if(mBakingList!=null)
         return mBakingList.size();
+        else return 0;
     }
 
     public class BakingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @Nullable
         @BindView(R.id.bakingName)
         TextView mTextView;
 
-        public BakingViewHolder(View itemView) {
+        BakingViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             ButterKnife.bind(this, itemView);

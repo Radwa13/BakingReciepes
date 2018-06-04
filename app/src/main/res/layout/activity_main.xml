@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="bakingrecipes.MainActivity"
+    android:orientation="vertical"
     android:gravity="center_horizontal">
 
 
@@ -16,4 +17,25 @@
         android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
+
+
+
+    <LinearLayout
+        android:id="@+id/retry"
+        android:layout_width="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:padding="5dp"
+        android:visibility="gone"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+<ImageView
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:layout_gravity="center"
+    android:id="@+id/reload"
+    android:src="@drawable/reload"/>
+    </LinearLayout>
 </LinearLayout>
+
+
