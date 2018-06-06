@@ -18,7 +18,6 @@ import static bakingrecipes.RecipeActivity.BAKING_NAME;
  * Implementation of App Widget functionality.
  */
 public class IngredientsWidget extends AppWidgetProvider {
-    private static String mBakingName;
 
     private static void updateAppWidget(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager,
                                         int appWidgetId) {
@@ -70,13 +69,11 @@ public class IngredientsWidget extends AppWidgetProvider {
         Bundle bundle = new Bundle();
         intent.putExtras(bundle);
         remoteViews.setRemoteAdapter(R.id.appwidget_listView, intent);
-
         Intent intentLaunched = new Intent(context,RecipeActivity.class);
-        intentLaunched.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("fromWidget", true);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentLaunched,0);
+        intentLaunched.putExtra("fromWidget", true);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentLaunched,PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setPendingIntentTemplate(R.id.see_more, pendingIntent);
-
+        remoteViews.setEmptyView(R.id.item, R.id.no_item);
         return remoteViews;
     }
 
