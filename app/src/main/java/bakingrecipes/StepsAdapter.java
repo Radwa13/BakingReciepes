@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.alfa.bakingreciepes.*;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -24,22 +25,22 @@ import butterknife.ButterKnife;
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHolder> {
     private ArrayList<Step> mStepList;
-    final private ListItemClickListner mClickHandler;
-    private final Context mContext;
-    @NonNull
-    private final ListItemClickListner mListItemClickListner;
+    final private ListItemClickListener mClickHandler;
     private static final int WITH_VIDEO = 1;
     private static final int WITHOUT_VIDEO = 0;
+    private Context mContext;
 
-    public interface ListItemClickListner {
+    public interface ListItemClickListener {
         void onClick(int position);
 
     }
-
-    public StepsAdapter(Context context, ListItemClickListner clickHandler) {
+    public StepsAdapter(Context context){
+        mContext = context;
+        mClickHandler = null;
+    }
+    public StepsAdapter(Context context, ListItemClickListener clickHandler) {
         mContext = context;
         mClickHandler = clickHandler;
-        mListItemClickListner = (ListItemClickListner) context;
     }
 
 
@@ -56,12 +57,11 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
 
     @Override
     public void onBindViewHolder(StepsViewHolder holder, int position) {
-        if(getItemViewType(position)==WITH_VIDEO)
+        if (getItemViewType(position) == WITH_VIDEO)
 
             holder.playIV.setVisibility(View.VISIBLE);
-        else if(getItemViewType(position)==WITHOUT_VIDEO)
+        else if (getItemViewType(position) == WITHOUT_VIDEO)
             holder.playIV.setVisibility(View.GONE);
-
         holder.mTextView.setText(mStepList.get(position).getShortDescription());
 
     }
@@ -79,6 +79,9 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         @Nullable
         @BindView(R.id.play)
         ImageView playIV;
+        @Nullable
+        @BindView(R.id.thumbnail)
+        ImageView thumbnailIV;
 
         StepsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -90,6 +93,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         @Override
         public void onClick(View view) {
             int postion = getAdapterPosition();
+            if(mClickHandler!=null)
             mClickHandler.onClick(postion);
         }
 
@@ -101,13 +105,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
     }
 
 
-
     @Override
 
     public int getItemViewType(int position) {
         if (!mStepList.get(position).getVideoURL().equals("")) {
             return WITH_VIDEO;
-        } else if ((mStepList.get(position).getVideoURL().equals(""))){
+        } else if ((mStepList.get(position).getVideoURL().equals(""))) {
             return WITHOUT_VIDEO;
         }
         return -1;

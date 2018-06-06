@@ -15,11 +15,9 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingTop="4dp">
-        +
 
-        <ImageButton
-            android:id="@id/exo_prev"
-            style="@style/ExoMediaButton.Previous" />
+
+
         +
 
         <ImageButton
@@ -47,9 +45,6 @@
             style="@style/ExoMediaButton.FastForward" />
         +
 
-        <ImageButton
-            android:id="@id/exo_next"
-            style="@style/ExoMediaButton.Next" />
         +
     </LinearLayout>
     +

@@ -3,6 +3,7 @@ package bakingrecipes;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.alfa.bakingreciepes.*;
 import com.google.gson.Gson;
@@ -27,7 +29,7 @@ import butterknife.OnClick;
 //import static com.example.alfa.bakingrecipes.BakingProvider.ACTION_INGREDIENT_ADDED;
 
 
-public class RecipeActivity extends AppCompatActivity implements StepsAdapter.ListItemClickListner, StepsFragment.StepItemClickListener {
+public class RecipeActivity extends AppCompatActivity {
     private boolean isTablet;
     private Example mBaking;
     private ArrayList<Ingredient> mIngredientList;
@@ -38,6 +40,7 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
     public static final String BAKING_KEY = "com.example.alfa.bakingrecipes.baking.key";
     public static final String INGREDIENTS_KEY = "com.example.alfa.bakingrecipes.ingredients.key";
     public static final String STEPS_KEY = "com.example.alfa.bakingrecipes.steps.key";
+    public static final String BAKING_NAME = "com.example.alfa.bakingrecipes.baking.name";
 
 
     @Override
@@ -69,7 +72,7 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
         if (findViewById(R.id.layoutForTablet) != null) {
             isTablet = true;
 
-            if (savedInstanceState == null||getSupportFragmentManager().getFragments().size()==0) {
+            if (savedInstanceState == null || getSupportFragmentManager().getBackStackEntryCount() == 0) {
                 bundle = new Bundle();
 
                 DetailFragment detailFragment = new DetailFragment();
@@ -77,13 +80,9 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
                 detailFragment.setSteps(mStepList, 0);
                 detailFragment.setArguments(bundle);
                 FragmentManager fragmentManager = getSupportFragmentManager();
-
-                fragmentManager.beginTransaction().add(R.id.master_list_detail, detailFragment)
-
+                fragmentManager.beginTransaction().replace(R.id.master_list_detail, detailFragment)
                         .commit();
-//
             }
-
         }
         bundle = new Bundle();
 
@@ -91,8 +90,9 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
         bundle.putParcelableArrayList(STEPS_KEY, mStepList);
 
         fragmentSteps.setArguments(bundle);
-        getSupportActionBar().setTitle(mBaking.getName());
-
+        if (getSupportFragmentManager() != null) {
+            getSupportActionBar().setTitle(mBaking.getName());
+        }
     }
 
     @OnClick(R.id.pin)
@@ -106,34 +106,16 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.Li
         Gson gson = new Gson();
         String json = gson.toJson(mBaking);
         SharedPreferencesMethods.savePreferencesString(this, BAKING_KEY, json);
-        //Now update all widgets
-        IngredientsWidget.updateIngredientsWidgets(this, appWidgetManager, appWidgetIds, mBaking.getName());
+        SharedPreferencesMethods.savePreferencesString(this, BAKING_NAME, mBaking.getName());
+        IngredientsWidget.updateIngredientsWidgets(this, appWidgetManager, appWidgetIds);
 
     }
 
-    //    @Override
-    public void onClick(int position) {
 
-        if (findViewById(R.id.layoutForTablet) != null) {
-            isTablet = true;
-            Bundle bundle = new Bundle();
-            bundle.putBoolean("isTablet", isTablet);
-            DetailFragment detailFragment = new DetailFragment();
-            detailFragment.setSteps(mStepList, position);
-            detailFragment.setArguments(bundle);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-
-            fragmentManager.beginTransaction().add(R.id.master_list_detail, detailFragment)
-
-                    .commit();
-//
-
-
-        } else {
-            Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra("isTablet", isTablet);
-            startActivity(intent);
-        }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     @Override

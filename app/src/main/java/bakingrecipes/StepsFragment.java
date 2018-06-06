@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,8 @@ import bakingrecipes.Data.Step;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static bakingrecipes.DetailFragment.STATE_PLAY_WHEN_READY;
+import static bakingrecipes.DetailFragment.STATE_RESUME_POSITION;
 import static bakingrecipes.RecipeActivity.STEPS_KEY;
 
 
@@ -27,7 +30,7 @@ import static bakingrecipes.RecipeActivity.STEPS_KEY;
  * Created by Alfa on 5/11/2018.
  */
 
-public class StepsFragment extends Fragment implements StepsAdapter.ListItemClickListner {
+public class StepsFragment extends Fragment implements StepsAdapter.ListItemClickListener {
     @Nullable
     private StepsAdapter stepsAdapter;
     @Nullable
@@ -36,6 +39,7 @@ public class StepsFragment extends Fragment implements StepsAdapter.ListItemClic
     private boolean isTablet;
     @Nullable
     private ArrayList<Step> mSteps;
+
     public interface StepItemClickListener {
         void onClick(int position);
     }
@@ -93,6 +97,14 @@ public class StepsFragment extends Fragment implements StepsAdapter.ListItemClic
             intent.putExtra("pos", position);
             startActivity(intent);
         } else {
+
+            DetailFragment detailFragment = new DetailFragment();
+            detailFragment.setSteps(mSteps, position);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+
+            fragmentManager.beginTransaction().replace(R.id.master_list_detail, detailFragment)
+
+                    .commit();
 
         }
 

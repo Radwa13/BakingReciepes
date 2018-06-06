@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.alfa.bakingreciepes.*;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -32,6 +33,7 @@ import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -65,6 +67,8 @@ public class DetailFragment extends Fragment {
     @Nullable
     @BindView(R.id.main_media_frame)
     protected FrameLayout mFrameLayout;
+    @BindView(R.id.thumbnail)
+    ImageView thumbnailIV;
     @Nullable
     private ArrayList<Step> mStepList;
     private int mPosition;
@@ -76,8 +80,8 @@ public class DetailFragment extends Fragment {
     private boolean landScape = false;
     private boolean mSetPlayWhenReady = true;
     private final String STEP_LIST_KEY = "stepListKey";
-    private final String STATE_RESUME_POSITION = "resumePosition";
-    private final String STATE_PLAY_WHEN_READY = "playerFullscreen";
+    public static final String STATE_RESUME_POSITION = "resumePosition";
+    public static final String STATE_PLAY_WHEN_READY = "playerFullscreen";
     private FrameLayout mFullScreenButton;
     private boolean mExoPlayerFullscreen = false;
     private ImageView mFullScreenIcon;
@@ -86,9 +90,9 @@ public class DetailFragment extends Fragment {
     @Nullable
     private DetailFragment.CloseVideo mClickHandler;
     private final String STEP = "step: ";
-    private boolean isTablet;
     private ComponentListener componentListener;
-
+    private boolean isTablet;
+    private int LAST_POSITION=0;
 
     @Nullable
     @Override
@@ -98,36 +102,45 @@ public class DetailFragment extends Fragment {
         View v = inflater.inflate(resId, container, false);
         ButterKnife.bind(this, v);
         componentListener = new ComponentListener();
-        if (getArguments() != null)
-            isTablet = getArguments().getBoolean("isTablet");
 
-        Log.d(TAG, "changed state to onCreate");
+        if (v.findViewById(R.id.layoutForTablet) != null) {
+            isTablet = true;
+        }
 
         if (savedInstanceState != null) {
             mStepList = savedInstanceState.getParcelableArrayList(STEP_LIST_KEY);
-            mPlayerPosition = savedInstanceState.getLong(STATE_RESUME_POSITION);
-            mSetPlayWhenReady = savedInstanceState.getBoolean(STATE_PLAY_WHEN_READY);
-            isTablet = savedInstanceState.getBoolean("isTablet");
+            if (mExoPlayerFullscreen) {
+                openFullscreenDialog();
+            }
+
         }
 
         initFullscreenButton();
         initFullscreenDialog();
 
+//
         if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && !mStepList.get(mPosition).getVideoURL().equals("") && !isTablet) {
             landScape = true;
             initFullscreenDialog();
             openFullscreenDialog();
-            //
             mClickHandler = (CloseVideo) getActivity();
         }
 
+
         short_desc.setText(mStepList.get(mPosition).getShortDescription());
         desc.setText(mStepList.get(mPosition).getDescription());
-        initializePlayer(Uri.parse(mStepList.get(mPosition).getVideoURL()));
-        if (savedInstanceState != null) {
 
-            mPlayer.setPlayWhenReady(mSetPlayWhenReady);
-            mPlayer.seekTo(mPlayerPosition);
+
+        if (!mStepList.get(mPosition).getThumbnailURL().equals("")) {
+            String extension = mStepList.get(mPosition).getThumbnailURL().substring(mStepList.get(mPosition).getThumbnailURL().lastIndexOf("."));
+            if (!extension.equals("mp4")) {
+                Picasso.with(mContext)
+                        .load(mStepList.get(mPosition).getThumbnailURL())
+                        .error(R.drawable.thumbnail)
+                        .into(thumbnailIV);
+            }
+        } else {
+            thumbnailIV.setVisibility(View.GONE);
         }
         showHideExoPlayer();
 
@@ -195,7 +208,7 @@ public class DetailFragment extends Fragment {
         MediaSource mediaSource = new ExtractorMediaSource(uri, new DefaultDataSourceFactory(mContext, userAgent), new DefaultExtractorsFactory(), null, null);
         mPlayer.prepare(mediaSource);
         mPlayer.addListener(componentListener);
-        mPlayer.setPlayWhenReady(mSetPlayWhenReady);
+        mPlayer.setPlayWhenReady(true);
         mExoPlayerView.setPlayer(mPlayer);
 
     }
@@ -215,7 +228,9 @@ public class DetailFragment extends Fragment {
             short_desc.setText(mStepList.get(mPosition).getShortDescription());
             desc.setText(mStepList.get(mPosition).getDescription());
             releasePlayer();
-            initializePlayer(Uri.parse(mStepList.get(mPosition).getVideoURL()));
+            if (mPlayer == null)
+                initializePlayer(Uri.parse(mStepList.get(mPosition).getVideoURL()));
+
             showHideExoPlayer();
             ((DetailActivity) getActivity()).setActionBarTitle(STEP + "" + (mPosition + 1));
 
@@ -229,7 +244,9 @@ public class DetailFragment extends Fragment {
             short_desc.setText(mStepList.get(mPosition).getShortDescription());
             desc.setText(mStepList.get(mPosition).getDescription());
             releasePlayer();
-            initializePlayer(Uri.parse(mStepList.get(mPosition).getVideoURL()));
+            if (mPlayer == null)
+                initializePlayer(Uri.parse(mStepList.get(mPosition).getVideoURL()));
+
             showHideExoPlayer();
 
             ((DetailActivity) getActivity()).setActionBarTitle(STEP + "" + (mPosition + 1));
@@ -252,12 +269,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(STATE_RESUME_POSITION, mPlayerPosition);
-        outState.putBoolean(STATE_PLAY_WHEN_READY, mSetPlayWhenReady);
-        outState.putBoolean("isTablet", isTablet);
-
         outState.putParcelableArrayList(STEP_LIST_KEY, mStepList);
-        Log.d(TAG, "changed state to SavedInstance");
 
     }
 
@@ -339,9 +351,11 @@ public class DetailFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (Util.SDK_INT > 23) {
-            initializePlayer(Uri.parse(mStepList.get(mPosition).getVideoURL()));
-            mPlayer.setPlayWhenReady(mSetPlayWhenReady);
-            mPlayer.seekTo(mPlayerPosition);
+            if (mPlayer == null && mPlayer == null) {
+                initializePlayer(Uri.parse(mStepList.get(mPosition).getVideoURL()));
+                mPlayer.setPlayWhenReady(mSetPlayWhenReady);
+                mPlayer.seekTo(mPlayerPosition);
+            }
         }
     }
 
@@ -349,11 +363,13 @@ public class DetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if ((Util.SDK_INT <= 23 && mPlayer == null)) {
-            Log.d(TAG, "changed state to onResume");
-
             initializePlayer(Uri.parse(mStepList.get(mPosition).getVideoURL()));
-            mPlayer.setPlayWhenReady(mSetPlayWhenReady);
-            mPlayer.seekTo(mPlayerPosition);
+
+        }
+        int position=mPosition;
+        if (getActivity().getIntent() != null&&LAST_POSITION==mPosition) {
+            mPlayer.setPlayWhenReady(getActivity().getIntent().getBooleanExtra(STATE_PLAY_WHEN_READY, true));
+            mPlayer.seekTo(getActivity().getIntent().getLongExtra(STATE_RESUME_POSITION, 0));
         }
     }
 
@@ -361,29 +377,34 @@ public class DetailFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, "changed state to onPause");
-
         mPlayerPosition = mPlayer.getCurrentPosition();
         mSetPlayWhenReady = mPlayer.getPlayWhenReady();
+        getActivity().getIntent().putExtra(STATE_RESUME_POSITION, mPlayerPosition);
+        getActivity().getIntent().putExtra(STATE_PLAY_WHEN_READY, mSetPlayWhenReady);
+
         if (Util.SDK_INT <= 23) {
             releasePlayer();
         }
+        LAST_POSITION=mPosition;
     }
 
     @Override
     public void onStop() {
         Log.d(TAG, "changed state to onStop");
-        if (mPlayer != null) {
-            mPlayerPosition = mPlayer.getCurrentPosition();
-            mSetPlayWhenReady = mPlayer.getPlayWhenReady();
-        }
+
         super.onStop();
         if (Util.SDK_INT > 23) {
             releasePlayer();
         }
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mPlayer != null) {
+            releasePlayer();
+        }
+    }
 }
 
 

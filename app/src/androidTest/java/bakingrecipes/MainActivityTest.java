@@ -1,6 +1,7 @@
 package bakingrecipes;
 
 
+import android.support.annotation.NonNull;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.ViewInteraction;
@@ -39,7 +40,7 @@ public class MainActivityTest {
     private IdlingResource mIdlingResource;
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public final ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
     @Before
     public void registerIdlingResource() {
         mIdlingResource = mActivityTestRule.getActivity().getIdlingResource();
@@ -56,9 +57,9 @@ public class MainActivityTest {
                 allOf(withId(R.id.bakingName), withText("Nutella Pie"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.card_view),
-                                        0),
-                                0),
+                                        withId(R.id.card_view)
+                                )
+                        ),
                         isDisplayed()));
 
         Intents.init();
@@ -72,37 +73,37 @@ public class MainActivityTest {
     public void ReciepeTest() {
 
 
-        ViewInteraction textView2 = onView(
+      onView(
                 allOf(withId(R.id.name), withText("Graham Cracker crumbs"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.ingredientsRv),
-                                        0),
-                                0),
+                                        withId(R.id.ingredientsRv)
+                                )
+                        ),
                         isDisplayed()));
 
         onView(allOf(withId(R.id.quantity),withText("Graham Cracker crumbs"),
-                childAtPosition(childAtPosition(withId(R.id.ingredientsRv), 0), 0),
+                childAtPosition(childAtPosition(withId(R.id.ingredientsRv))),
                 isDisplayed()));
 
     }
 
 
     private static Matcher<View> childAtPosition(
-            final Matcher<View> parentMatcher, final int position) {
+            @NonNull final Matcher<View> parentMatcher) {
 
         return new TypeSafeMatcher<View>() {
             @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
+            public void describeTo(@NonNull Description description) {
+                description.appendText("Child at position " + 0 + " in parent ");
                 parentMatcher.describeTo(description);
             }
 
             @Override
-            public boolean matchesSafely(View view) {
+            public boolean matchesSafely(@NonNull View view) {
                 ViewParent parent = view.getParent();
                 return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
+                        && view.equals(((ViewGroup) parent).getChildAt(0));
             }
         };
     }

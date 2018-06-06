@@ -9,20 +9,18 @@
 
     <TextView
         android:id="@+id/shortDesc"
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:layout_weight="2"
         android:layout_gravity="center"
-        android:textSize="20sp"
+        android:textSize="17sp"
         android:padding="10dp" />
 
     <ImageView
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="75dp"
         android:id="@+id/play"
         android:layout_gravity="center"
         android:textColor="@color/textColor"
-        android:layout_weight="1"
         android:src="@drawable/play" />
 </LinearLayout>

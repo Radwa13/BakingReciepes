@@ -37,7 +37,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="bakingrecipes.RecipeActivity"> </meta-data>
         </activity>
-
         <receiver android:name="bakingrecipes.IngredientsWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
